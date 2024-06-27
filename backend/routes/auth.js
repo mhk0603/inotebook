@@ -48,8 +48,6 @@ router.post('/createuser', [
 
 
 
-
-
 // ROUTE 2 - Aunthenticating a user using: POST "/api/auth/login". Doesn't require login
 
 router.post('/login', [
@@ -96,7 +94,8 @@ router.post('/login', [
 })
 
 
-// ROUTE 2 - Get logged in user details using: POST "/api/auth/getuser". Login required
+
+// ROUTE 3 - Get logged in user details using: POST "/api/auth/getuser". Login required
 router.post('/getuser', fetchuser, async (req, res) => {
     
     try {
