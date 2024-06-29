@@ -4,7 +4,7 @@ const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetchuser=require('../middleware/fetchuser')
+const fetchuser = require('../middleware/fetchuser')
 
 const JWT_SECRET = 'Mahek@tha';
 
@@ -25,11 +25,13 @@ router.post('/createuser', [
         const secPass = await bcrypt.hash(req.body.password, salt); // await as it returns a promise
 
         // Create a new user
-        const user = await User.create({
-            name: req.body.name,
-            email: req.body.email,
-            password: secPass,
-        });
+        const user = await User.create(
+            {
+                name: req.body.name,
+                email: req.body.email,
+                password: secPass,
+            }
+        );
 
         const data = {
             user: {
@@ -97,7 +99,7 @@ router.post('/login', [
 
 // ROUTE 3 - Get logged in user details using: POST "/api/auth/getuser". Login required
 router.post('/getuser', fetchuser, async (req, res) => {
-    
+
     try {
         userId = req.user.id;
         const user = await User.findById(userId).select("-password")
