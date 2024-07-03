@@ -1,9 +1,13 @@
 const connectToMongo=require('./db');
 const express = require('express')
+var cors=require('cors')
 
 connectToMongo();
 const app = express()
 const port = 5000
+
+app.use(cors())
+app.use(express.json())
 
 app.use(express.json()) // to use req.body u need to write this middleware then u will not get undefined in console and now u can deal in json
 

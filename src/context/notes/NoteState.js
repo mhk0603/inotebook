@@ -2,79 +2,104 @@ import { useState } from "react";
 import NoteContext from "./noteContext";
 
 const NoteState=(props)=>{
-    const notesInitial=[
-        {
-          "_id": "667c728fe89aaf5ebd76847a",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "My title",
-          "description": "Please buy groceries",
-          "tag": "Daily",
-          "date": "2024-06-26T19:57:03.506Z",
-          "__v": 0
-        },
-        {
-          "_id": "667d141c238efd02e295cd25",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "New Note Updated2",
-          "description": "Please access the updated playlist",
-          "tag": "Work",
-          "date": "2024-06-27T07:26:20.604Z",
-          "__v": 0
-        },
-        {
-          "_id": "667c728fe89aaf5ebd76847a",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "My title",
-          "description": "Please buy groceries",
-          "tag": "Daily",
-          "date": "2024-06-26T19:57:03.506Z",
-          "__v": 0
-        },
-        {
-          "_id": "667d141c238efd02e295cd25",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "New Note Updated2",
-          "description": "Please access the updated playlist",
-          "tag": "Work",
-          "date": "2024-06-27T07:26:20.604Z",
-          "__v": 0
-        },
-        {
-          "_id": "667c728fe89aaf5ebd76847a",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "My title",
-          "description": "Please buy groceries",
-          "tag": "Daily",
-          "date": "2024-06-26T19:57:03.506Z",
-          "__v": 0
-        },
-        {
-          "_id": "667d141c238efd02e295cd25",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "New Note Updated2",
-          "description": "Please access the updated playlist",
-          "tag": "Work",
-          "date": "2024-06-27T07:26:20.604Z",
-          "__v": 0
-        },
-        {
-          "_id": "667d141c238efd02e295cd25",
-          "user": "667bee87a2681b36945a66c8",
-          "title": "New Note Updated2",
-          "description": "Please access the updated playlist",
-          "tag": "Work",
-          "date": "2024-06-27T07:26:20.604Z",
-          "__v": 0
+  const host="http://localhost:5000"
+  const notesInitial=[]
+  const [notes, setNotes] = useState(notesInitial)
+
+      // Get all note
+      const getNotes= async ()=>{
+          // API CALL
+          const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3YmVlODdhMjY4MWIzNjk0NWE2NmM4In0sImlhdCI6MTcxOTQxNDczMn0.67qSUehRs_A617pwEJabZgk0ocYaUba26M6tS1kegsQ"
+            }
+            
+          });
+          const json=await response.json()
+          setNotes(json)
+      }
+
+
+      // Add a note
+      const addNote= async (title, description, tag)=>{
+          // API CALL
+          const response = await fetch(`${host}/api/notes/addnote`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3YmVlODdhMjY4MWIzNjk0NWE2NmM4In0sImlhdCI6MTcxOTQxNDczMn0.67qSUehRs_A617pwEJabZgk0ocYaUba26M6tS1kegsQ"
+  
+            },
+            body: JSON.stringify({title, description, tag})
+          });
+
+          const note=await response.json()
+          setNotes(notes.concat(note))
+      }
+
+     
+     
+      // Delete a note
+      
+
+      const deleteNote= async (id)=>{
+
+        // API CALL
+        const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3YmVlODdhMjY4MWIzNjk0NWE2NmM4In0sImlhdCI6MTcxOTQxNDczMn0.67qSUehRs_A617pwEJabZgk0ocYaUba26M6tS1kegsQ"
+
+          },
+        });
+        const json=response.json();
+        console.log(json)
+
+        const newNotes= notes.filter((note)=>{ return note._id!==id})
+        setNotes(newNotes)
+      }
+
+
+      // Edit a note
+
+      const editNote=async (id, title, description, tag)=>{
+
+        // API CALL
+        const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3YmVlODdhMjY4MWIzNjk0NWE2NmM4In0sImlhdCI6MTcxOTQxNDczMn0.67qSUehRs_A617pwEJabZgk0ocYaUba26M6tS1kegsQ"
+
+          },
+          body: JSON.stringify({title, description, tag})
+        });
+        const json= await response.json();
+        console.log(json)
+
+        let newNotes= JSON.parse(JSON.stringify(notes))
+
+        // LOGIC TO EDIT IN CLIENT
+        for (let index = 0; index < newNotes.length; index++) {
+          const element = newNotes[index];
+          if(element._id === id){
+            newNotes[index].title=title
+            newNotes[index].description=description
+            newNotes[index].tag=tag
+            break;
+          }
+
+      
         }
-      ]
-
-      const [notes, setNotes] = useState(notesInitial)
-
-    
+        setNotes(newNotes);
+      }
 
     
     return (
-        <NoteContext.Provider value={{notes, setNotes}}>
+        <NoteContext.Provider value={{notes, addNote, deleteNote, editNote, getNotes }}>
             {props.children}
         </NoteContext.Provider>
     )
